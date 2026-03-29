@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>اكتشف المنتج المناسب لك</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #FAF7F2;
+    --card: #FFFFFF;
+    --accent: #C8956C;
+    --accent-dark: #A87750;
+    --accent-light: #F0E0D0;
+    --text: #3A2E26;
+    --text-muted: #8C7B6E;
+    --border: #E8DED4;
+    --success: #6B9E7A;
+    --shadow: 0 4px 24px rgba(58, 46, 38, 0.08);
+    --shadow-lg: 0 12px 48px rgba(58, 46, 38, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Background texture ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(200,149,108,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(200,149,108,0.06) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 24px 16px 40px;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+
+  .header .logo-mark {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(200,149,108,0.3);
+  }
+
+  .header .logo-mark span {
+    font-size: 1.6rem;
+    filter: brightness(0) invert(1);
+  }
+
+  .header h1 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+
+  .header p {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* ── Progress ── */
+  .progress-wrap {
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease 0.1s forwards;
+  }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .progress-info span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── Question Card ── */
+  .question-card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 28px 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .question-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+  }
+
+  .question-number {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+  }
+
+  .question-text {
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    color: var(--text);
+  }
+
+  /* ── Options ── */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    text-align: right;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    transform: translateX(-4px);
+  }
+
+  .option-btn:active {
+    transform: scale(0.98) translateX(-4px);
+  }
+
+  .option-btn.selected {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    box-shadow: 0 0 0 3px rgba(200,149,108,0.15);
+  }
+
+  .option-btn .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    transition: all 0.25s ease;
+  }
+
+  .option-btn.selected .icon {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .option-btn.selected .icon span {
+    filter: brightness(0) invert(1);
+  }
+
+  .option-label { flex: 1; }
+
+  /* ── Number Input (for weight/age) ── */
+  .number-input-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 16px 0 24px;
+  }
+
+  .num-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    background: var(--card);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    font-family: 'Tajawal', sans-serif;
+  }
+
+  .num-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+  .num-btn:active { transform: scale(0.92); }
+
+  .num-display {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--text);
+    min-width: 100px;
+    text-align: center;
+    line-height: 1;
+  }
+
+  .num-unit {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* ── Navigation ── */
+  .nav-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .nav-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 14px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: none;
+    text-align: center;
+  }
+
+  .nav-btn.primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(200,149,108,0.3);
+  }
+
+  .nav-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(200,149,108,0.4);
+  }
+
+  .nav-btn.primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .nav-btn.secondary {
+    background: var(--bg);
+    color: var(--text-muted);
+    border: 2px solid var(--border);
+  }
+
+  .nav-btn.secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Results ── */
+  .results-section {
+    text-align: center;
+  }
+
+  .results-header {
+    margin-bottom: 28px;
+  }
+
+  .results-header .check-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--success);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 16px rgba(107,158,122,0.3);
+  }
+
+  .results-header .check-icon span {
+    font-size: 1.8rem;
+    filter: brightness(0) invert(1);
+  }
+
+  .results-header h2 {
+    font-size: 1.4rem;
+    font-weight: 900;
+    margin-bottom: 6px;
+  }
+
+  .results-header p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .product-card {
+    background: var(--card);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 14px;
+    text-align: right;
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .product-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .product-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+  }
+
+  .product-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: var(--accent-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+
+  .product-body {
+    padding: 18px 20px;
+  }
+
+  .product-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--success);
+    background: rgba(107,158,122,0.1);
+    padding: 3px 10px;
+    border-radius: 99px;
+    margin-bottom: 8px;
+  }
+
+  .product-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+    color: var(--text);
+  }
+
+  .product-desc {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .product-price {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--accent-dark);
+  }
+
+  .product-price .currency {
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .add-to-cart {
+    padding: 10px 20px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    color: #fff;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(200,149,108,0.25);
+  }
+
+  .add-to-cart:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(200,149,108,0.35);
+  }
+
+  .restart-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 28px;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    color: var(--text-muted);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .restart-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .slide-enter {
+    animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .slide-exit {
+    animation: slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes slideOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(-30px); }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 400px) {
+    .app { padding: 16px 12px 32px; }
+    .question-card { padding: 22px 18px; }
+    .question-text { font-size: 1.05rem; }
+    .num-display { font-size: 2.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app" id="app"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// Quiz Data & Product Mapping
+// ══════════════════════════════════════════════
+
+const questions = [
+  {
+    id: 'gender',
+    question: 'ما هو جنسك؟',
+    type: 'options',
+    options: [
+      { value: 'male', label: 'ذكر', icon: '🧔' },
+      { value: 'female', label: 'أنثى', icon: '👩' },
+    ],
+  },
+  {
+    id: 'age',
+    question: 'كم عمرك؟',
+    type: 'number',
+    unit: 'سنة',
+    min: 16,
+    max: 80,
+    default: 28,
+  },
+  {
+    id: 'weight',
+    question: 'كم وزنك الحالي؟',
+    type: 'number',
+    unit: 'كجم',
+    min: 30,
+    max: 200,
+    default: 70,
+  },
+  {
+    id: 'goal',
+    question: 'ما هو هدفك الأساسي؟',
+    type: 'options',
+    options: [
+      { value: 'lose', label: 'إنقاص الوزن', icon: '📉' },
+      { value: 'gain', label: 'زيادة الوزن والعضلات', icon: '💪' },
+      { value: 'maintain', label: 'الحفاظ على اللياقة', icon: '⚖️' },
+      { value: 'health', label: 'تحسين الصحة العامة', icon: '❤️' },
+    ],
+  },
+  {
+    id: 'activity',
+    question: 'ما مستوى نشاطك البدني؟',
+    type: 'options',
+    options: [
+      { value: 'sedentary', label: 'قليل الحركة (مكتبي)', icon: '🪑' },
+      { value: 'moderate', label: 'نشاط معتدل (2-3 مرات أسبوعياً)', icon: '🚶' },
+      { value: 'active', label: 'نشط جداً (5+ مرات أسبوعياً)', icon: '🏃' },
+    ],
+  },
+  {
+    id: 'diet',
+    question: 'هل لديك أي حمية غذائية خاصة؟',
+    type: 'options',
+    options: [
+      { value: 'none', label: 'لا يوجد', icon: '🍽️' },
+      { value: 'keto', label: 'كيتو', icon: '🥑' },
+      { value: 'vegan', label: 'نباتي', icon: '🌱' },
+      { value: 'gluten_free', label: 'خالي من الجلوتين', icon: '🌾' },
+    ],
+  },
+];
+
+// Product recommendations mapping
+// Replace these URLs with your actual Zid store product URLs
+const productDatabase = {
+  lose_weight: {
+    name: 'بروتين التنشيف — نكهة الشوكولاتة',
+    desc: 'بروتين عالي الجودة منخفض السعرات، مثالي لإنقاص الوزن مع الحفاظ على الكتلة العضلية.',
+    price: '189',
+    badge: 'الأنسب لهدفك',
+    emoji: '🥤',
+    url: 'https://your-store.zid.sa/products/lean-protein',
+  },
+  gain_muscle: {
+    name: 'ماس جينر — فانيلا بريميوم',
+    desc: 'تركيبة غنية بالسعرات والبروتين لبناء العضلات وزيادة الوزن بشكل صحي.',
+    price: '219',
+    badge: 'الأنسب لهدفك',
+    emoji: '💪',
+    url: 'https://your-store.zid.sa/products/mass-gainer',
+  },
+  maintain: {
+    name: 'واي بروتين أيزوليت',
+    desc: 'بروتين نقي سريع الامتصاص للحفاظ على لياقتك البدنية وتعزيز الاستشفاء.',
+    price: '199',
+    badge: 'الأنسب لهدفك',
+    emoji: '⚡',
+    url: 'https://your-store.zid.sa/products/whey-isolate',
+  },
+  health: {
+    name: 'فيتامينات متعددة يومية',
+    desc: 'تركيبة شاملة من الفيتامينات والمعادن لتعزيز الصحة العامة والمناعة.',
+    price: '129',
+    badge: 'الأنسب لهدفك',
+    emoji: '🌿',
+    url: 'https://your-store.zid.sa/products/daily-vitamins',
+  },
+  keto_supplement: {
+    name: 'مكمل كيتو — MCT أويل',
+    desc: 'زيت MCT نقي لدعم حمية الكيتو وتعزيز الطاقة والتركيز.',
+    price: '149',
+    badge: 'مناسب لحميتك',
+    emoji: '🥥',
+    url: 'https://your-store.zid.sa/products/mct-oil',
+  },
+  vegan_protein: {
+    name: 'بروتين نباتي — بازلاء وأرز',
+    desc: 'بروتين نباتي 100% عالي الجودة، مناسب للنباتيين بنكهة طبيعية.',
+    price: '179',
+    badge: 'نباتي 100%',
+    emoji: '🌱',
+    url: 'https://your-store.zid.sa/products/vegan-protein',
+  },
+  omega3: {
+    name: 'أوميجا 3 — زيت السمك',
+    desc: 'أحماض دهنية أساسية لصحة القلب والمفاصل والدماغ.',
+    price: '99',
+    badge: 'إضافة مُوصى بها',
+    emoji: '🐟',
+    url: 'https://your-store.zid.sa/products/omega3',
+  },
+};
+
+function getRecommendations(answers) {
+  const products = [];
+  const goal = answers.goal;
+  const diet = answers.diet;
+
+  // Primary product based on goal
+  if (goal === 'lose') products.push(productDatabase.lose_weight);
+  else if (goal === 'gain') products.push(productDatabase.gain_muscle);
+  else if (goal === 'maintain') products.push(productDatabase.maintain);
+  else if (goal === 'health') products.push(productDatabase.health);
+
+  // Diet-specific product
+  if (diet === 'keto') products.push(productDatabase.keto_supplement);
+  else if (diet === 'vegan') products.push(productDatabase.vegan_protein);
+
+  // Everyone gets omega3 as a bonus recommendation
+  products.push(productDatabase.omega3);
+
+  return products;
+}
+
+// ══════════════════════════════════════════════
+// App State & Rendering
+// ══════════════════════════════════════════════
+
+let currentStep = 0;
+let answers = {};
+let animating = false;
+
+function render() {
+  const app = document.getElementById('app');
+  const totalSteps = questions.length;
+
+  if (currentStep >= totalSteps) {
+    renderResults(app);
+    return;
+  }
+
+  const q = questions[currentStep];
+  const progress = ((currentStep) / totalSteps) * 100;
+
+  app.innerHTML = `
+    <div class="header">
+      <div class="logo-mark"><span>✨</span></div>
+      <h1>اكتشف المنتج المناسب لك</h1>
+      <p>أجب عن بعض الأسئلة وسنقترح لك الأفضل</p>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span>السؤال ${currentStep + 1} من ${totalSteps}</span>
+        <span>${Math.round(progress)}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${progress}%"></div>
+      </div>
+    </div>
+
+    <div class="question-card slide-enter" id="questionCard">
+      <span class="question-number">السؤال ${currentStep + 1}</span>
+      <p class="question-text">${q.question}</p>
+
+      ${q.type === 'options' ? renderOptions(q) : ''}
+      ${q.type === 'number' ? renderNumberInput(q) : ''}
+
+      <div class="nav-row">
+        ${currentStep > 0 ? `<button class="nav-btn secondary" onclick="prevStep()">السابق</button>` : ''}
+        <button class="nav-btn primary" id="nextBtn"
+          onclick="nextStep()"
+          ${!answers[q.id] && q.type === 'options' ? 'disabled' : ''}>
+          ${currentStep === totalSteps - 1 ? 'عرض النتائج ✨' : 'التالي'}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function renderOptions(q) {
+  return `
+    <div class="options">
+      ${q.options.map(opt => `
+        <button class="option-btn ${answers[q.id] === opt.value ? 'selected' : ''}"
+          onclick="selectOption('${q.id}', '${opt.value}')">
+          <div class="icon"><span>${opt.icon}</span></div>
+          <span class="option-label">${opt.label}</span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function renderNumberInput(q) {
+  const val = answers[q.id] || q.default;
+  answers[q.id] = val;
+  return `
+    <div class="number-input-wrap">
+      <button class="num-btn" onclick="adjustNumber('${q.id}', 1, ${q.min}, ${q.max})">+</button>
+      <div>
+        <div class="num-display" id="numDisplay">${val}</div>
+        <div class="num-unit">${q.unit}</div>
+      </div>
+      <button class="num-btn" onclick="adjustNumber('${q.id}', -1, ${q.min}, ${q.max})">−</button>
+    </div>
+  `;
+}
+
+function renderResults(app) {
+  const products = getRecommendations(answers);
+
+  app.innerHTML = `
+    <div class="results-section slide-enter">
+      <div class="results-header">
+        <div class="check-icon"><span>✓</span></div>
+        <h2>تم تحليل إجاباتك! 🎉</h2>
+        <p>إليك المنتجات المناسبة لك بناءً على أهدافك</p>
+      </div>
+
+      ${products.map((p, i) => `
+        <div class="product-card" id="product-${i}" style="transition-delay: ${i * 0.15}s">
+          <div class="product-img">${p.emoji}</div>
+          <div class="product-body">
+            <span class="product-badge">✓ ${p.badge}</span>
+            <h3 class="product-name">${p.name}</h3>
+            <p class="product-desc">${p.desc}</p>
+            <div class="product-footer">
+              <span class="product-price">${p.price} <span class="currency">ر.س</span></span>
+              <button class="add-to-cart" onclick="goToProduct('${p.url}')">أضف للسلة</button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+
+      <button class="restart-btn" onclick="restart()">🔄 إعادة الاستبيان</button>
+    </div>
+  `;
+
+  // Stagger product card animations
+  setTimeout(() => {
+    products.forEach((_, i) => {
+      setTimeout(() => {
+        const card = document.getElementById(`product-${i}`);
+        if (card) card.classList.add('visible');
+      }, 200 + i * 150);
+    });
+  }, 100);
+}
+
+// ── Interactions ──
+
+function selectOption(qId, value) {
+  answers[qId] = value;
+  render();
+}
+
+function adjustNumber(qId, delta, min, max) {
+  let val = (answers[qId] || questions.find(q => q.id === qId).default) + delta;
+  val = Math.max(min, Math.min(max, val));
+  answers[qId] = val;
+  const display = document.getElementById('numDisplay');
+  if (display) display.textContent = val;
+}
+
+function nextStep() {
+  const q = questions[currentStep];
+  if (!answers[q.id] && q.type === 'options') return;
+  if (animating) return;
+  animating = true;
+
+  const card = document.getElementById('questionCard');
+  if (card) card.classList.replace('slide-enter', 'slide-exit');
+
+  setTimeout(() => {
+    currentStep++;
+    animating = false;
+    render();
+  }, 280);
+}
+
+function prevStep() {
+  if (currentStep <= 0 || animating) return;
+  animating = true;
+  currentStep--;
+  animating = false;
+  render();
+}
+
+function restart() {
+  currentStep = 0;
+  answers = {};
+  render();
+}
+
+function goToProduct(url) {
+  // In production, this redirects to the actual Zid product page
+  if (url && url.startsWith('http')) {
+    window.open(url, '_blank');
+  } else {
+    alert('سيتم توجيهك لصفحة المنتج في المتجر');
+  }
+}
+
+// ── Initialize ──
+render();
+</script>
+</body>
+</html>
